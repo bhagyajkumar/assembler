@@ -106,7 +106,7 @@ def tokenize(command_items):
             db.commit()
             curr.close()
         curr = db.cursor()
-        curr.execute("INSERT INTO commands (mem_loc, label, opcode, operand) VALUES (?,?,?,?)",
+        curr.execute("INSERT INTO commands (label, mem_loc, opcode, operand) VALUES (?,?,?,?)",
                          [hex(pc), "", "END",""])
         db.commit()
     else:
@@ -133,7 +133,7 @@ print(tabulate(db_data, headers=header, tablefmt="grid"))
 
 print("\n\nSymbol table \n------------")
 header = ["label", "mem_loc"]
-res = curr.execute("SELECT mem_loc, label FROM symbols;")
+res = curr.execute("SELECT label, mem_loc FROM symbols;")
 db_data = res.fetchall()
 print(tabulate(db_data, headers=header, tablefmt="grid"))
 
