@@ -12,12 +12,13 @@ pgm_name = ""
 pc = 0
 initial_memory_location = None
 instructions = None
+start_adr = ""
 
 optab = {
     "LDA" : "23",
     "ADD" : "69",
     "HLDA" : "2F",
-    "STL" : "7D"
+    "STL" : "C3"
 }
 
 with open("ins.asm", "r") as f:
@@ -39,12 +40,14 @@ def tokenize(command_items):
     global pgm_name
     global pc
     global initial_memory_location
-    
+    global start_adr
+
     details = {}
     first_line = command_items[0]
     if first_line[1] == "START":
         pgm_name = first_line[0]
-        initial_memory_location = int(first_line[2], 16)
+        initial_memory_location = int("0x"+first_line[2], 16)-3
+        start_adr = first_line[2]
         pc = initial_memory_location
         details[hex(pc)] = {
             "LABEL": pgm_name,
@@ -123,7 +126,7 @@ curr = db.cursor()
 
 header = ["mem_loc", "label", "opcode", "operand"]
 res = curr.execute("SELECT mem_loc, label, opcode, operand FROM commands;")
-db_data = res.fetchall()
+db_data = res.fetchall() 
 
 print("\n\n Intermediate table \n ------------------")
 print(tabulate(db_data, headers=header, tablefmt="grid"))
@@ -157,7 +160,7 @@ def pass2():
 
     for row in curr.execute("SELECT operand FROM commands WHERE opcode='END';"):
         operand, = row
-        print("E" + operand.rjust(6, '0'))
+        print("E" + start_adr)
 
 
 pass2()
