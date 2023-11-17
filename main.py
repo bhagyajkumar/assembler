@@ -16,7 +16,8 @@ instructions = None
 optab = {
     "LDA" : "23",
     "ADD" : "69",
-    "HLDA" : "2F"
+    "HLDA" : "2F",
+    "STL" : "7D"
 }
 
 with open("ins.asm", "r") as f:
@@ -137,7 +138,7 @@ print(tabulate(db_data, headers=header, tablefmt="grid"))
 def pass2():
     curr = db.cursor()
     header = "H"
-    header += pgm_name.ljust(6)
+    header += pgm_name.strip()
     header += hex(initial_memory_location)[2:].rjust(6, '0')
     length = pc - initial_memory_location
     header += hex(length)[2:].rjust(6, '0')
